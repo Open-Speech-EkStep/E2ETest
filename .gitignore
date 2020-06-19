@@ -1,0 +1,6 @@
+# IntelliJ
+.idea/
+
+E2E.iml
+
+target/
