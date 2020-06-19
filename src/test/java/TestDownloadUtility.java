@@ -5,7 +5,7 @@ public class TestDownloadUtility {
 
     public JobProcessor jobProcessor = new JobProcessor();
 
-    @Test
+    @Test (enabled = false)
     public void testVideoMode() {
         String url = "https://www.youtube.com/watch?v=ruqMj-RQ_zA";
         jobProcessor.porcessor(url,"video","cluster","enc-2","yey1");
