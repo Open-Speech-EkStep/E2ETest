@@ -4,3 +4,5 @@
 E2E.iml
 
 target/
+
+.DS_Store

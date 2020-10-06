@@ -1,0 +1,2 @@
+raw_file_name,duration,title,speaker_name,audio_id,cleaned_duration,num_of_speakers,language,has_other_audio_signature,type,source,experiment_use,utterances_files_list,source_url,speaker_gender,source_website,experiment_name,mother_tongue,age_group,recorded_state,recorded_district,recorded_place,recorded_date,purpose
+testamulya2.mp3,1.1111111,testamulya2.mp3,testspeaker,,,1,Hindi,False,audio,testamulya2,False,,https://www.youtube.com/watch?v=111111,male,https://www.youtube.com/channel/11111111,,,,,,,,

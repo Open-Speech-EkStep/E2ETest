@@ -1,9 +1,47 @@
-version: 2.1
-
-orbs:
-  maven: circleci/maven@0.0.12
-
-workflows:
-  maven_test:
+version: 2.0
     jobs:
-      - maven/test # checkout, build, test, and upload test results
+      test:
+        docker:
+            - image: circleci/openjdk:stretch
+        steps:
+          - command :
+                  echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+                  gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+                  gcloud --quiet config set project ${GCP_PROJECT}
+                  rm ${HOME}/gcp-key.json
+          - checkout
+          - environment:
+                      POSTGRES_USER: DB_USERNAME
+                      POSTGRES_PASSWORD: DB_PASSWORD
+                      POSTGRES_DB: DB_HOST
+          - run: ./mvnw test
+
+    workflows:
+    #  version: 2
+      build:
+        jobs:
+          - test
+#orbs:
+#  maven: circleci/maven@0.0.12
+#    jobs:
+#
+#     build_project:
+#        #machine setup and credential
+#       name: Set Credentials
+#         command: |
+#           echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+#           gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+#           gcloud --quiet config set project ${GCP_PROJECT}
+#        # sh ~/project/packages/<< parameters.package_name >>/deployDAG.sh << parameters.env_name >>
+#           rm ${HOME}/gcp-key.json
+#
+#          environment:
+#            POSTGRES_USER: DB_USERNAME
+#            POSTGRES_PASSWORD: DB_PASSWORD
+#            POSTGRES_DB: DB_HOST
+#
+#     run_test:
+#       - maven/test # checkout, build, test, and upload test results
+#
+#
+## config for DB username pwd
