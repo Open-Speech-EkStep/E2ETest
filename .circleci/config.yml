@@ -14,6 +14,7 @@ jobs:
 
       - run:
            command: |
+              sudo apt-get install google-cloud-sdk -y
               echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
               gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
               gcloud --quiet config set project ${GCP_PROJECT}
