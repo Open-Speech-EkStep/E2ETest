@@ -4,11 +4,6 @@ jobs:
     docker:
       - image: circleci/openjdk:stretch
     steps:
-      - command : |
-          echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
-          gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-          gcloud --quiet config set project ${GCP_PROJECT}
-          rm ${HOME}/gcp-key.json
 
       - checkout
 
@@ -16,7 +11,13 @@ jobs:
           POSTGRES_USER: DB_USERNAME
           POSTGRES_PASSWORD: DB_PASSWORD
           POSTGRES_DB: DB_HOST
-      - run: ./mvnw test
+      - run:
+           command: |
+              echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+              gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+              gcloud --quiet config set project ${GCP_PROJECT}
+              rm ${HOME}/gcp-key.json
+              ./mvnw test
 
 
 workflows:
