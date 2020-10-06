@@ -3,14 +3,15 @@ jobs:
   test:
     docker:
       - image: circleci/openjdk:stretch
+    environment:
+      POSTGRES_USER: DB_USERNAME
+      POSTGRES_PASSWORD: DB_PASSWORD
+      POSTGRES_DB: DB_HOST
+
     steps:
 
       - checkout
 
-      - environment:
-          POSTGRES_USER: DB_USERNAME
-          POSTGRES_PASSWORD: DB_PASSWORD
-          POSTGRES_DB: DB_HOST
       - run:
            command: |
               echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
