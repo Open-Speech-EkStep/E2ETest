@@ -1,26 +1,29 @@
 version: 2.0
-    jobs:
-      test:
-        docker:
-            - image: circleci/openjdk:stretch
-        steps:
-          - command :
-                  echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
-                  gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-                  gcloud --quiet config set project ${GCP_PROJECT}
-                  rm ${HOME}/gcp-key.json
-          - checkout
-          - environment:
-                      POSTGRES_USER: DB_USERNAME
-                      POSTGRES_PASSWORD: DB_PASSWORD
-                      POSTGRES_DB: DB_HOST
-          - run: ./mvnw test
 
-    workflows:
-    #  version: 2
-      build:
-        jobs:
-          - test
+jobs:
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+    steps:
+      - command : |
+          echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+          gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+          gcloud --quiet config set project ${GCP_PROJECT}
+          rm ${HOME}/gcp-key.json
+
+      - checkout
+
+      - environment:
+          POSTGRES_USER: DB_USERNAME
+          POSTGRES_PASSWORD: DB_PASSWORD
+          POSTGRES_DB: DB_HOST
+      - run: ./mvnw test
+
+
+workflows:
+  build:
+    jobs:
+      - test
 #orbs:
 #  maven: circleci/maven@0.0.12
 #    jobs:
