@@ -1,34 +1,33 @@
-version: 2.0
+version: 2.1
+
+orbs:
+  maven: circleci/maven@0.0.12
+
+#workflows:
+#  maven_test:
+#    jobs:
+#      - maven/test
 
 jobs:
   test:
-    machine:
-      image: ubuntu-1604:201903-01
     environment:
       POSTGRES_USER: DB_USERNAME
       POSTGRES_PASSWORD: DB_PASSWORD
       POSTGRES_DB: DB_HOST
-
     steps:
       - checkout
       - run:
            command: |
-              sudo apt install software-properties-common apt-transport-https -y
-              sudo add-apt-repository ppa:webupd8team/java -y
-              sudo apt-get update -y
-              sudo apt-get install oracle-java8-installer
-              sudo apt install maven
-
               echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
               gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
               gcloud --quiet config set project ${GCP_PROJECT}
               rm ${HOME}/gcp-key.json
-              ./mvnw test
+              maven test
 
 
 workflows:
-  version: 2
-  build:
+#  version: 2
+  maven_test:
     jobs:
       - test
 #orbs:
