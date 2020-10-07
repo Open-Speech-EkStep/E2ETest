@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+
+    working_directory: ~/E2E
+
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+      - image: circleci/postgres:9.6.3-alpine
+        environment:
+          POSTGRES_USER: $POSTGRES_USER
+          POSTGRES_DB: $POSTGRES_DB
+          POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+
+    steps:
+
+      - checkout
+
+      - restore_cache:
+          key: E2E-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: E2E-{{ checksum "pom.xml" }}
+
+      - run: mvn package
+
+      - store_test_results:
+          path: target/surefire-reports
+
+#      - store_artifacts:
+#          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
