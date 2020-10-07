@@ -38,7 +38,7 @@ public class TestCatalogue implements Constants {
     }
 
     @Test (enabled = true,priority = 0)
-    public void validateTriggerSuccessful() throws InterruptedException, IOException, URISyntaxException, SQLException {
+    public void validateTriggerSuccessful() throws InterruptedException, IOException, SQLException {
         String dagstatus;
 
             testdataprep();
@@ -206,6 +206,62 @@ public class TestCatalogue implements Constants {
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 2,15000);
         assertEquals(dagstatus,"failed");
+
+    }
+
+    @Test(enabled  =false,priority =7)
+    public void validate_stt() throws InterruptedException, SQLException {
+        String dagstatus;
+        restResponse = triggerDag.triggerDag(TRIGGER_API, STT_DAG,triggerDag.setformatteddate());
+        assertEquals(restResponse.getStatus(),"SUCCESS");
+        dagstatus = triggerDag.triggerAndWait(STT_DAG, DAG_STATE_API, 3,45000);
+
+        assertEquals(dagstatus,"success");
+
+
+        ResultSet mediametadata = postgresclient.select_query("select * FROM media_metadata_staging where source = 'testamulya2' ");
+        while (mediametadata.next())
+        {
+            boolean isnormalised = mediametadata.getBoolean("is_normalized");
+            BigDecimal audio_id = mediametadata.getBigDecimal ("audio_id");
+            audio_id_testamulya2 = audio_id.toString();
+            System.out.println(audio_id_testamulya2);
+
+            //assertEquals(isnormalised,"true");
+            assertEquals(isnormalised,true);
+            assertTrue(isnormalised);
+
+        }
+
+        ResultSet media = postgresclient.select_query("select count(*) FROM media where source= 'testamulya2' ");
+        while (media.next())
+        {
+            int numberofrows = media.getInt(1);
+            assertEquals(numberofrows,1);
+        }
+
+        ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'testamulya2')");
+        while (media_speaker_mapping_count.next())
+        {
+            int numberofrows = media_speaker_mapping_count.getInt(1);
+            assertEquals(numberofrows,13);
+        }
+
+
+        ResultSet media_speaker_mapping_statuscount = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id ='" +audio_id_testamulya2+ "' ");
+        while (media_speaker_mapping_statuscount.next())
+        {
+            int numberofrows = media_speaker_mapping_statuscount.getInt(1);
+            assertEquals(numberofrows,13);
+        }
+
+        System.out.println(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
+
+        int bucketsize =  gcpConnection.bucketSize(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
+        assertEquals(bucketsize,13);
+
+
+
 
     }
 

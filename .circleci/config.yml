@@ -1,8 +1,9 @@
 version: 2.0
 jobs:
   test:
-    docker:
-      - image: circleci/openjdk:stretch
+   machine:
+    image: ubuntu-1604:201903-01
+
     environment:
       POSTGRES_USER: DB_USERNAME
       POSTGRES_PASSWORD: DB_PASSWORD
@@ -13,12 +14,17 @@ jobs:
       - checkout
 
       - run:
+           name: Setup
            command: |
-              echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
-              gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-              gcloud --quiet config set project ${GCP_PROJECT}
-              rm ${HOME}/gcp-key.json
-              ./mvnw test
+
+#              echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+#              gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+#              gcloud --quiet config set project ${GCP_PROJECT}
+#              rm ${HOME}/gcp-key.json
+      -  run:
+           name: Run Tests
+           command: |
+               ./mvnw test
 
 
 workflows:

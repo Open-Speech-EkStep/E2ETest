@@ -10,6 +10,7 @@ public interface Constants{
     String  CSV_PATH="./src/main/resources/testamulya2.csv";
     String  AUDIOFILE_PATH="./src/main/resources/testamulya2.mp3";
     String  CATALOGUE_DAG_ID="testamulya2";
+    String STT_DAG="testamulya2_stt";
     String  DATA_MARKER_DAG_ID="data_marker_pipeline";
     String REPORT_PRE_DAG_ID="report_generation_pipeline_pre-transcription";
     String REPORT_POST_DAG_ID="report_generation_pipeline_post-transcription";

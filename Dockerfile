@@ -1,7 +1,7 @@
 FROM openjdk:8-jdk-alpine
 
-RUN mkdir /opt/datacollector-youtube-test/
-WORKDIR /opt/datacollector-youtube-test/
+RUN mkdir /opt/E2E-test/
+WORKDIR /opt/E2E-test/
 
 
 # ----
@@ -23,21 +23,14 @@ ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
 # ----
 # Install project dependencies and keep sources
 # make source folder
-RUN mkdir -p /opt/datacollector-youtube-test/
-WORKDIR /opt/datacollector-youtube-test/
+RUN mkdir -p /opt/E2E-test/
+WORKDIR /opt/E2E-test/
 # install maven dependency packages (keep in image)
-COPY pom.xml /opt/datacollector-youtube-test/
+COPY pom.xml /opt/E2E-test/
 RUN mvn -T 1C install && rm -rf target
 # copy other source files (keep in image)
-COPY src /opt/datacollector-youtube-test/src
+COPY src /opt/E2E-test/src
 
 
-#WORKDIR /opt/datacollector-youtube-test/
-
-#CMD clean install
-#RUN "cd "
 CMD  mvn clean install
 
-#COPY requirements.txt .
-#RUN pip install -r requirements.txt
-#COPY . /opt/datacollector-youtube/
