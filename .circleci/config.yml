@@ -1,34 +1,33 @@
-version: 2.0
-
+version: 2
 jobs:
   build:
+
+    working_directory: ~/E2E
+
     docker:
-      - image: circleci/openjdk:stretch
+      - image: circleci/openjdk:8-jdk-stretch
+#        environment:
+#          POSTGRES_USER: root
+#          POSTGRES_DB: circle_test
 
     steps:
+
       - checkout
-      - run: ./mvnw -Dmaven.test.skip=true package
-      - persist_to_workspace:
-          root: ./
+
+      - restore_cache:
+          key: E2E-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - save_cache:
           paths:
-            - target/
+            - ~/.m2
+          key: E2E-{{ checksum "pom.xml" }}
 
-  test:
-    docker:
-      - image: circleci/openjdk:stretch
+      - run: mvn package
 
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ./target
-      - run: ./mvnw test
+      - store_test_results:
+          path: target/surefire-reports
 
-workflows:
-  version: 2
-
-  build-then-test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
+#      - store_artifacts:
+#          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
