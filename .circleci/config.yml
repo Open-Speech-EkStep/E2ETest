@@ -1,9 +1,34 @@
-version: 2.1
+version: 2.0
 
-orbs:
-  maven: circleci/maven@0.0.12
-  
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:stretch
+
+    steps:
+      - checkout
+      - run: ./mvnw -Dmaven.test.skip=true package
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - target/
+
+  test:
+    docker:
+      - image: circleci/openjdk:stretch
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ./target
+      - run: ./mvnw test
+
 workflows:
-  maven_test:
+  version: 2
+
+  build-then-test:
     jobs:
-      - maven/test
+      - build
+      - test:
+          requires:
+            - build
