@@ -30,7 +30,6 @@ public class TestCatalogue implements Constants {
 
     }
 
-    @Test
     public void deletrecords() throws SQLException{
         postgresclient.delete_data("Delete FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source in ('testamulya2'))");
         postgresclient.delete_data("Delete FROM media_metadata_staging where source in ('testamulya2')");
@@ -40,7 +39,7 @@ public class TestCatalogue implements Constants {
     @Test (enabled = true,priority = 0)
     public void validateTriggerSuccessful() throws InterruptedException, IOException, SQLException {
         String dagstatus;
-
+            deletrecords();
             testdataprep();
             restResponse = triggerDag.triggerDag(TRIGGER_API, CATALOGUE_DAG_ID,triggerDag.setformatteddate());
             assertEquals(restResponse.getStatus(),"SUCCESS");
@@ -113,6 +112,19 @@ public class TestCatalogue implements Constants {
     @Test (enabled = true , priority = 2)
     public void validate_Data_Marker_pipeline() throws InterruptedException, SQLException {
         String dagstatus;
+
+      //{
+        //  "testamulya2": {
+        //    "filter": {
+        //      "by_snr": {
+        //        "lte": 45,
+        //        "gte": 24
+        //      },
+        //      "with_randomness": "true"
+        //    }
+        //    }
+        //}
+
         restResponse = triggerDag.triggerDag(TRIGGER_API, DATA_MARKER_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(DATA_MARKER_DAG_ID, DAG_STATE_API, 3,45000);
@@ -175,7 +187,7 @@ public class TestCatalogue implements Constants {
     }
 
 
-    @Test(enabled = false,priority = 5)
+    @Test(enabled = true,priority = 6)
     public void validate_Post_Transcription_Report() throws InterruptedException, IOException, URISyntaxException {
         String dagstatus;
         triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"testamulya2\"]");
@@ -186,21 +198,20 @@ public class TestCatalogue implements Constants {
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,20000);
         assertEquals(dagstatus,"success");
-        int after_reportgeneration_count = gcpConnection.bucketSize(Constants.PRE_REPORT_PATH);
-        int after_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
+        int after_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
+        int after_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
 
         assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);
         assertEquals(after_csvreport_count,before_csvreport_count+1);
-
 
     }
 
 
 
-    @Test(enabled = false,priority = 6)
+    @Test(enabled = true,priority = 7)
     public void validate_Post_Transcription_Report_InvalidSource() throws InterruptedException, IOException, URISyntaxException {
         String dagstatus;
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription ","[\"test\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"test\"]");
 
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_POST_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
@@ -209,7 +220,27 @@ public class TestCatalogue implements Constants {
 
     }
 
-    @Test(enabled  =false,priority =7)
+    @Test(enabled = true,priority = 8)
+    public void validate_Post_Transcription_Report_wihoutDB_DATA() throws InterruptedException, IOException, URISyntaxException, SQLException {
+        String dagstatus;
+        deletrecords();
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"testamulya2\"]");
+//        int before_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
+//        System.out.println("----------------------------------------");
+//        int before_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
+        restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_POST_DAG_ID,triggerDag.setformatteddate());
+        assertEquals(restResponse.getStatus(),"SUCCESS");
+        dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,20000);
+        assertEquals(dagstatus,"failed");
+//        int after_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
+//        int after_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
+//
+//        assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);
+//        assertEquals(after_csvreport_count,before_csvreport_count+1);
+
+    }
+
+    @Test(enabled  =true,priority =5)
     public void validate_stt() throws InterruptedException, SQLException {
         String dagstatus;
         restResponse = triggerDag.triggerDag(TRIGGER_API, STT_DAG,triggerDag.setformatteddate());
@@ -226,11 +257,7 @@ public class TestCatalogue implements Constants {
             BigDecimal audio_id = mediametadata.getBigDecimal ("audio_id");
             audio_id_testamulya2 = audio_id.toString();
             System.out.println(audio_id_testamulya2);
-
-            //assertEquals(isnormalised,"true");
-            assertEquals(isnormalised,true);
             assertTrue(isnormalised);
-
         }
 
         ResultSet media = postgresclient.select_query("select count(*) FROM media where source= 'testamulya2' ");
@@ -240,27 +267,20 @@ public class TestCatalogue implements Constants {
             assertEquals(numberofrows,1);
         }
 
-        ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'testamulya2')");
+        ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'testamulya2') AND status= 'Rejected' ");
         while (media_speaker_mapping_count.next())
         {
             int numberofrows = media_speaker_mapping_count.getInt(1);
-            assertEquals(numberofrows,13);
-        }
-
-
-        ResultSet media_speaker_mapping_statuscount = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id ='" +audio_id_testamulya2+ "' ");
-        while (media_speaker_mapping_statuscount.next())
-        {
-            int numberofrows = media_speaker_mapping_statuscount.getInt(1);
-            assertEquals(numberofrows,13);
+            assertEquals(numberofrows,3);
         }
 
         System.out.println(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
 
-        int bucketsize =  gcpConnection.bucketSize(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
-        assertEquals(bucketsize,13);
+        int rejectedfilecount =  gcpConnection.bucketSize(Constants.STT_PATH+audio_id_testamulya2+"/rejected/");
+        assertEquals(rejectedfilecount,3);
 
-
+        int cleanfilecount =  gcpConnection.bucketSize(Constants.STT_PATH+audio_id_testamulya2+"/clean/");
+        assertEquals(cleanfilecount,13);
 
 
     }

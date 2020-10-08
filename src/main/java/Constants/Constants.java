@@ -6,7 +6,7 @@ public interface Constants{
     String CLIENT_ID = "304385116606-cpqn3bf1ihte6ccaoqdhros84ogpmv65.apps.googleusercontent.com";
     String IAM_SCOPE = "https://www.googleapis.com/auth/iam";
     String PROJECT_ID="ekstepspeechrecognition";
-    String  BUCKET_NAME="ekstepspeechrecognition-dev";
+    String  BUCKET_NAME="ekstepspeechrecognition-test";
     String  CSV_PATH="./src/main/resources/testamulya2.csv";
     String  AUDIOFILE_PATH="./src/main/resources/testamulya2.mp3";
     String  CATALOGUE_DAG_ID="testamulya2";
@@ -27,4 +27,5 @@ public interface Constants{
     String PRE_REPORT__CSV_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/Final_csv_reports/";
     String POST_REPORT_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/";
     String POST_REPORT__CSV_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/Final_csv_reports/";
+    String STT_PATH = "data/audiotospeech/integration/processed/hindi/audio/testamulya2/";
 }
