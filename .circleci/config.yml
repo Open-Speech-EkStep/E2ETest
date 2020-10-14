@@ -18,7 +18,7 @@ jobs:
             wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-265.0.0-linux-x86_64.tar.gz
             tar -zxf google-cloud-sdk-*
             cd google-cloud-sdk
-            ./install.sh --quiet
+            ./install.sh --help
             echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
             gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
             gcloud --quiet config set project ${GCP_PROJECT}
