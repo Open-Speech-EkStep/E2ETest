@@ -31,11 +31,10 @@ jobs:
             cd ${HOME}
             sudo apt-get update
             sudo apt-get install postgresql-client
-            cat /usr/share/postgresql/9.6/main/postgresql.conf
             wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
             chmod +x cloud_sql_proxy
    
-            nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:3307 &
+            nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:5432 &
             
 
 
