@@ -33,7 +33,7 @@ jobs:
             chmod +x cloud_sql_proxy
             nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:3307 &
             
-            sudo ps -f -u postgres
+            sudo lsof -n -u postgres |grep LISTEN
 
 
       - checkout:
