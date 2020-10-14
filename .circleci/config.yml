@@ -36,7 +36,6 @@ jobs:
             sleep 60s
             cat nohup.out
 
-
       - checkout:
          
       - restore_cache:
