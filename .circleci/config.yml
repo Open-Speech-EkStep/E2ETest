@@ -39,10 +39,6 @@ jobs:
             nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:5432 &
             sleep 60s
             telnet 127.0.0.1 5432
-            nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:3306 &
-
-            telnet 127.0.0.1 3306
-
 
 
       - checkout:
