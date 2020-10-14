@@ -28,7 +28,7 @@ jobs:
                      ./bin/gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
                      ./bin/gcloud --quiet config set project ${GCP_PROJECT}
                      export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json
-                     echo$GOOGLE_APPLICATION_CREDENTIALS
+                     echo $GOOGLE_APPLICATION_CREDENTIALS
             sudo apt-get update
             sudo apt-get install postgresql-client
             sudo apt-get install telnet
