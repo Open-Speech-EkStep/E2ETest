@@ -15,15 +15,13 @@ jobs:
       - run :
           name: Setup Google Auth
           command: |
-            cd ${HOME}
             wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-265.0.0-linux-x86_64.tar.gz
             tar -zxf google-cloud-sdk-*
             cd google-cloud-sdk
             ./install.sh --quiet
-            ls
             echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
-            gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-            gcloud --quiet config set project ${GCP_PROJECT}
+            ./bin/gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+            ./bin/gcloud --quiet config set project ${GCP_PROJECT}
 
       - run :
           name: Setup proxy for psql
