@@ -2,8 +2,6 @@ version: 2
 jobs:
   build:
 
-    working_directory: ~/E2E
-
     docker:
       - image: circleci/openjdk:8-jdk-stretch
         environment:
@@ -32,8 +30,8 @@ jobs:
             nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:3307 &
 
 
-      - checkout
-          path: ~/project
+      - checkout:
+          path: ~/E2E
 
       - restore_cache:
           key: E2E-{{ checksum "pom.xml" }}
