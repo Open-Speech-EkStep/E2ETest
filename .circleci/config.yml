@@ -34,12 +34,9 @@ jobs:
             wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
             chmod +x cloud_sql_proxy
             nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:5432 &
-            sleep 60s
+            sleep 40s
             cat nohup.out
             cd ~/E2E
-            ls
-            cd ~/E2E/E2E/
-
             ls
             mvn dependency:go-offline
             mvn package
