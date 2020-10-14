@@ -33,6 +33,7 @@ jobs:
 
 
       - checkout
+          path: ~/project
 
       - restore_cache:
           key: E2E-{{ checksum "pom.xml" }}
