@@ -17,7 +17,7 @@ public class Postgresclient {
             System.out.println("envvar ="+ System.getenv());
             Class.forName("org.postgresql.Driver");
             connection = DriverManager
-                    .getConnection("jdbc:postgresql://"+System.getenv("POSTGRES_DB")+ "/speech_recognition_data_catalog",
+                    .getConnection("jdbc:postgresql://127.0.0.1:3307"+ "/speech_recognition_data_catalog_test",
                             System.getenv("POSTGRES_USER"), System.getenv("POSTGRES_PASSWORD"));
         } catch (Exception e) {
             e.printStackTrace();
