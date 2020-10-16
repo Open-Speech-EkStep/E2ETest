@@ -173,7 +173,6 @@ public class TestCatalogue implements Constants {
     @Test(enabled = true,priority = 3)
     public void validate_Pre_Transcription_Report() throws InterruptedException, IOException, URISyntaxException {
         String dagstatus;
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription ","[\"testamulya2\"]");
         int before_reportgeneration_count = gcpConnection.bucketSize(Constants.PRE_REPORT_PATH);
         System.out.println("----------------------------------------");
         int before_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
@@ -208,7 +207,6 @@ public class TestCatalogue implements Constants {
     @Test(enabled = true,priority = 6)
     public void validate_Post_Transcription_Report() throws InterruptedException, IOException, URISyntaxException {
         String dagstatus;
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"testamulya2\"]");
         int before_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
         System.out.println("----------------------------------------");
         int before_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
@@ -255,7 +253,7 @@ public class TestCatalogue implements Constants {
         String dagstatus;
         restResponse = triggerDag.triggerDag(TRIGGER_API, STT_DAG,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
-        dagstatus = triggerDag.triggerAndWait(STT_DAG, DAG_STATE_API, 3,45000);
+        dagstatus = triggerDag.triggerAndWait(STT_DAG, DAG_STATE_API, 3,75000);
 
         assertEquals(dagstatus,"success");
 
