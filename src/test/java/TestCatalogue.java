@@ -55,7 +55,7 @@ public class TestCatalogue implements Constants {
         triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription","[\"testamulya2\"]");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription","[\"testamulya2\"]");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofields","{\"testamulya2\": []}");
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofilelist","{\"testamulya2\": []}");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","audioidsforstt","{\"testamulya2\": []}");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","snrcatalogue","{ \"testamulya2\": { \"count\": 1, \"format\": \"mp3\" } } ");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","sourceinfo","{\n" +
                 "  \"testamulya2\": {\n" +
@@ -144,7 +144,6 @@ public class TestCatalogue implements Constants {
     public void validate_Data_Marker_pipeline() throws InterruptedException, SQLException, IOException, URISyntaxException {
         String dagstatus;
 
-
         restResponse = triggerDag.triggerDag(TRIGGER_API, DATA_MARKER_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(DATA_MARKER_DAG_ID, DAG_STATE_API, 3,45000);
@@ -180,7 +179,7 @@ public class TestCatalogue implements Constants {
         int before_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_PRE_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
-        dagstatus = triggerDag.triggerAndWait(REPORT_PRE_DAG_ID, DAG_STATE_API, 3,20000);
+        dagstatus = triggerDag.triggerAndWait(REPORT_PRE_DAG_ID, DAG_STATE_API, 3,30000);
         assertEquals(dagstatus,"success");
         int after_reportgeneration_count = gcpConnection.bucketSize(Constants.PRE_REPORT_PATH);
         int after_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
@@ -200,7 +199,7 @@ public class TestCatalogue implements Constants {
 
     restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_PRE_DAG_ID,triggerDag.setformatteddate());
     assertEquals(restResponse.getStatus(),"SUCCESS");
-    dagstatus = triggerDag.triggerAndWait(REPORT_PRE_DAG_ID, DAG_STATE_API, 2,15000);
+    dagstatus = triggerDag.triggerAndWait(REPORT_PRE_DAG_ID, DAG_STATE_API, 2,25000);
     assertEquals(dagstatus,"failed");
 
     }
@@ -215,7 +214,7 @@ public class TestCatalogue implements Constants {
         int before_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_POST_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
-        dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,20000);
+        dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,30000);
         assertEquals(dagstatus,"success");
         int after_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
         int after_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
@@ -234,7 +233,7 @@ public class TestCatalogue implements Constants {
 
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_POST_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
-        dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 2,15000);
+        dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 2,25000);
         assertEquals(dagstatus,"failed");
 
     }
