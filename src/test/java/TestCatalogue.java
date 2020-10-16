@@ -2,6 +2,7 @@ import Constants.Constants;
 import cloudCommunication.GCPConnection;
 import cloudCommunication.UploadObject;
 import databaseConnection.Postgresclient;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import restCommunication.RestResponse;
 
@@ -34,6 +35,35 @@ public class TestCatalogue implements Constants {
         postgresclient.delete_data("Delete FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source in ('testamulya2'))");
         postgresclient.delete_data("Delete FROM media_metadata_staging where source in ('testamulya2')");
         postgresclient.delete_data("Delete FROM media where source in ('testamulya2')");
+    }
+
+    @BeforeClass
+    public void uploadAirflowVariables() throws IOException, URISyntaxException {
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","data_filter_config"," {\n" +
+                "          \"testamulya2\": {\n" +
+                "            \"filter\": {\n" +
+                "              \"by_snr\": {\n" +
+                "                \"lte\": 45,\n" +
+                "                \"gte\": 24\n" +
+                "              },\n" +
+                "              \"with_randomness\": \"true\"\n" +
+                "            }\n" +
+                "            }\n" +
+                "        }");
+
+
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription","[\"testamulya2\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription","[\"testamulya2\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofields","{\"testamulya2\": []}");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofilelist","{\"testamulya2\": []}");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","snrcatalogue","{ \"testamulya2\": { \"count\": 1, \"format\": \"mp3\" } } ");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","sourceinfo","{\n" +
+                "  \"testamulya2\": {\n" +
+                "    \"count\": 1,\n" +
+                "    \"stt\":\"google\"\n" +
+                "  }\n" +
+                "}");
+
     }
 
     @Test (enabled = true,priority = 0)
@@ -109,28 +139,17 @@ public class TestCatalogue implements Constants {
 
 
 
+
     @Test (enabled = true , priority = 2)
-    public void validate_Data_Marker_pipeline() throws InterruptedException, SQLException {
+    public void validate_Data_Marker_pipeline() throws InterruptedException, SQLException, IOException, URISyntaxException {
         String dagstatus;
 
-      //{
-        //  "testamulya2": {
-        //    "filter": {
-        //      "by_snr": {
-        //        "lte": 45,
-        //        "gte": 24
-        //      },
-        //      "with_randomness": "true"
-        //    }
-        //    }
-        //}
 
         restResponse = triggerDag.triggerDag(TRIGGER_API, DATA_MARKER_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(DATA_MARKER_DAG_ID, DAG_STATE_API, 3,45000);
 
         assertEquals(dagstatus,"success");
-        //deletrecords();
 
 
         ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'testamulya2') AND staged_for_transcription ='TRUE'");
@@ -225,18 +244,10 @@ public class TestCatalogue implements Constants {
         String dagstatus;
         deletrecords();
         triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"testamulya2\"]");
-//        int before_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
-//        System.out.println("----------------------------------------");
-//        int before_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_POST_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,20000);
         assertEquals(dagstatus,"failed");
-//        int after_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
-//        int after_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
-//
-//        assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);
-//        assertEquals(after_csvreport_count,before_csvreport_count+1);
 
     }
 
