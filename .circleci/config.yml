@@ -42,12 +42,13 @@ jobs:
       - run:
           name: Run tests
           command: |
-            cd ~/E2E
-            ls
+            cd ${HOME}
             nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:5432 &
-            sleep 40s
+            sleep 30s
             cat nohup.out
             ps -ef | grep cloudsql
+            cd ~/E2E
+            ls
             mvn dependency:go-offline
             mvn package
 
