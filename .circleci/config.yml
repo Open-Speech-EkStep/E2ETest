@@ -38,18 +38,18 @@ jobs:
             sudo apt-get install telnet
             wget https://dl.google.com/cloudsql/cloud_sql_proxy.linux.amd64 -O cloud_sql_proxy
             chmod +x cloud_sql_proxy
-            nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:5432 &
-            sleep 40s
-            cat nohup.out
+
       - run:
           name: Run tests
           command: |
             cd ~/E2E
             ls
+            nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:5432 &
+            sleep 40s
+            cat nohup.out
             ps -ef | grep cloudsql
             mvn dependency:go-offline
             mvn package
-
 
       - store_test_results:
           path: target/surefire-reports
