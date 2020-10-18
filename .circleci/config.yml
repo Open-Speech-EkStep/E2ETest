@@ -46,6 +46,7 @@ jobs:
           command: |
             cd ~/E2E
             ls
+            ps -ef | grep cloudsql
             mvn dependency:go-offline
             mvn package
 
