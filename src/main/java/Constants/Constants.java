@@ -26,6 +26,6 @@ public interface Constants{
     String PRE_REPORT_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/";
     String PRE_REPORT__CSV_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/Final_csv_reports/";
     String POST_REPORT_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/";
-    String POST_REPORT__CSV_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/Final_csv_reports/";
+    String POST_REPORT__CSV_PATH="data/audiotospeech/integration/processed/hindi/reports/Final_csv_reports/";
     String STT_PATH = "data/audiotospeech/integration/processed/hindi/audio/testamulya2/";
 }
