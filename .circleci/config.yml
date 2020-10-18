@@ -14,8 +14,9 @@ jobs:
     steps:
 
       - checkout:
-      - run :
-          name: Setup proxy for psql
+
+      - run:
+          name: Setup Google cloud
           command: |
             cd ${HOME}
             wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-265.0.0-linux-x86_64.tar.gz
@@ -28,6 +29,10 @@ jobs:
             ./bin/gcloud --quiet config set project ${GCP_PROJECT}
             export GOOGLE_APPLICATION_CREDENTIALS=${HOME}/gcp-key.json
             echo $GOOGLE_APPLICATION_CREDENTIALS
+      - run :
+          name: Setup proxy for psql
+          command: |
+            cd ${HOME}
             sudo apt-get update
             sudo apt-get install postgresql-client
             sudo apt-get install telnet
@@ -36,6 +41,9 @@ jobs:
             nohup ./cloud_sql_proxy -dir=./cloudsql -instances=ekstepspeechrecognition:us-central1:crowdsourcedb=tcp:5432 &
             sleep 40s
             cat nohup.out
+      - run:
+          name: Run tests
+          command: |
             cd ~/E2E
             ls
             mvn dependency:go-offline
