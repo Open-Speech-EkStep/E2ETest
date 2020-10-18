@@ -174,7 +174,6 @@ public class TestCatalogue implements Constants {
     public void validate_Pre_Transcription_Report() throws InterruptedException, IOException, URISyntaxException {
         String dagstatus;
         int before_reportgeneration_count = gcpConnection.bucketSize(Constants.PRE_REPORT_PATH);
-        System.out.println("count of xlsx reports : "+before_reportgeneration_count);
         System.out.println("----------------------------------------");
         int before_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_PRE_DAG_ID,triggerDag.setformatteddate());
@@ -184,7 +183,7 @@ public class TestCatalogue implements Constants {
         int after_reportgeneration_count = gcpConnection.bucketSize(Constants.PRE_REPORT_PATH);
         int after_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
 
-       // assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);
+        assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);
         assertEquals(after_csvreport_count,before_csvreport_count+1);
 
 
@@ -208,17 +207,14 @@ public class TestCatalogue implements Constants {
     @Test(enabled = true,priority = 6)
     public void validate_Post_Transcription_Report() throws InterruptedException, IOException, URISyntaxException {
         String dagstatus;
-        int before_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
         System.out.println("----------------------------------------");
         int before_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_POST_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,30000);
         assertEquals(dagstatus,"success");
-        int after_reportgeneration_count = gcpConnection.bucketSize(Constants.POST_REPORT_PATH);
         int after_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
-
-        assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);
+        //assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);
         assertEquals(after_csvreport_count,before_csvreport_count+1);
 
     }
