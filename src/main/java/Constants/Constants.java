@@ -22,10 +22,11 @@ public interface Constants{
     String JOB_FAILED_STATUS="failed";
     String JOB_SUCCESS_STATUS="success";
     String RAW_CATALOGUED_PATH ="data/audiotospeech/raw/download/catalogued/hindi/audio/testamulya2/";
+    String SNR_DONE_PATH ="data/audiotospeech/raw/download/snrdonepath/hindi/audio/testamulya2/";
+    String DUPLICATE_FILE_PATH ="data/audiotospeech/raw/download/duplicate/testamulya2/";
     String RAW_LANDING_PATH ="data/audiotospeech/raw/landing/hindi/audio/testamulya2/";
     String PRE_REPORT_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/";
     String PRE_REPORT__CSV_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/Final_csv_reports/";
-    String POST_REPORT_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/";
     String POST_REPORT__CSV_PATH="data/audiotospeech/integration/processed/hindi/reports/Final_csv_reports/";
     String STT_PATH = "data/audiotospeech/integration/processed/hindi/audio/testamulya2/";
 }

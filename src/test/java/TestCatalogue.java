@@ -1,6 +1,6 @@
 import Constants.Constants;
 import cloudCommunication.GCPConnection;
-import cloudCommunication.UploadObject;
+import cloudCommunication.Upload_Delete_Object;
 import databaseConnection.Postgresclient;
 import org.testng.annotations.Test;
 import restCommunication.RestResponse;
@@ -17,15 +17,19 @@ public class TestCatalogue implements Constants {
 
     TriggerDag triggerDag = new TriggerDag();
     RestResponse restResponse = new RestResponse();
-    UploadObject upload = new UploadObject();
+    Upload_Delete_Object upload_Delete_Object = new Upload_Delete_Object();
     GCPConnection gcpConnection = new GCPConnection();
     Postgresclient postgresclient = new Postgresclient();
     String audio_id_testamulya2="";
 
 
     public void testdataprep() throws IOException, URISyntaxException {
-        upload.uploadObject(PROJECT_ID,BUCKET_NAME,CSVOBJECT_PATH,CSV_PATH);
-        upload.uploadObject(PROJECT_ID,BUCKET_NAME,AUDIOOBJECT_PATH,AUDIOFILE_PATH);
+        upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.SNR_DONE_PATH+"testamulya2.mp3");
+        upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.SNR_DONE_PATH+"testamulya2.csv");
+        upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.DUPLICATE_FILE_PATH+"testamulya2.csv");
+        upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.DUPLICATE_FILE_PATH+"testamulya2.csv");
+        upload_Delete_Object.uploadObject(PROJECT_ID,BUCKET_NAME,CSVOBJECT_PATH,CSV_PATH);
+        upload_Delete_Object.uploadObject(PROJECT_ID,BUCKET_NAME,AUDIOOBJECT_PATH,AUDIOFILE_PATH);
         uploadAirflowVariables();
 
 
@@ -39,27 +43,31 @@ public class TestCatalogue implements Constants {
 
 
     public void uploadAirflowVariables() throws IOException, URISyntaxException {
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","data_filter_config"," {\n" +
-                "          \"testamulya2\": {\n" +
-                "            \"filter\": {\n" +
-                "              \"by_snr\": {\n" +
-                "                \"lte\": 45,\n" +
-                "                \"gte\": 24\n" +
-                "              },\n" +
-                "              \"with_randomness\": \"true\"\n" +
-                "            }\n" +
-                "            }\n" +
-                "        }");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","data_filter_config","{\n" +
+                "  \"testamulya2\": {\n" +
+                "    \"language\": \"hindi\",\n" +
+                "    \"filter\": {\n" +
+                "      \"by_snr\": {\n" +
+                "        \"lte\": 45,\n" +
+                "        \"gte\": 24    \n" +
+                "  },\n" +
+                "      \"with_randomness\": \"true\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}");
 
-
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","language","hindi");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","bucket","ekstepspeechrecognition-test");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription","[\"testamulya2\"]");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription","[\"testamulya2\"]");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofields","{\"testamulya2\": []}");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofilelist","{\"testamulya2\": []}");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","audioidsforstt","{\"testamulya2\": []}");
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","snrcatalogue","{ \"testamulya2\": { \"count\": 1, \"format\": \"mp3\" } } ");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","snrcatalogue","{ \"testamulya2\": { \"count\": 1,\"language\": \"hindi\", \"format\": \"mp3\" } } ");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","sourceinfo","{\n" +
                 "  \"testamulya2\": {\n" +
                 "    \"count\": 1,\n" +
+                "    \"language\":\"hindi\",\n" +
                 "    \"stt\":\"google\"\n" +
                 "  }\n" +
                 "}");
@@ -67,14 +75,15 @@ public class TestCatalogue implements Constants {
     }
 
     @Test (enabled = true,priority = 0)
-    public void validateTriggerSuccessful() throws InterruptedException, IOException, SQLException, URISyntaxException {
+    public void validateSNR() throws InterruptedException, IOException, SQLException, URISyntaxException {
         String dagstatus;
             deletrecords();
-            testdataprep();
+           testdataprep();
+            int beforeSNRFilecount =  gcpConnection.bucketSize(Constants.SNR_DONE_PATH);
+            System.out.println("before file count"+beforeSNRFilecount);
             restResponse = triggerDag.triggerDag(TRIGGER_API, CATALOGUE_DAG_ID,triggerDag.setformatteddate());
             assertEquals(restResponse.getStatus(),"SUCCESS");
             dagstatus = triggerDag.triggerAndWait(CATALOGUE_DAG_ID, DAG_STATE_API, 5,45000);
-
             assertEquals(dagstatus,"success");
 
 
@@ -84,11 +93,9 @@ public class TestCatalogue implements Constants {
     {
      boolean isnormalised = mediametadata.getBoolean("is_normalized");
      BigDecimal audio_id = mediametadata.getBigDecimal ("audio_id");
-     String utterance_list= mediametadata.getString("utterances_files_list");
-      audio_id_testamulya2 = audio_id.toString();
+     audio_id_testamulya2 = audio_id.toString();
      System.out.println(audio_id_testamulya2);
 
-    //assertEquals(isnormalised,"true");
     assertEquals(isnormalised,true);
     assertTrue(isnormalised);
 
@@ -118,22 +125,30 @@ public class TestCatalogue implements Constants {
 
         System.out.println(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
 
-        int bucketsize =  gcpConnection.bucketSize(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
-        assertEquals(bucketsize,13);
+        int CatalogueFilecount =  gcpConnection.bucketSize(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
+        assertEquals(CatalogueFilecount,13);
+        // check SSNR done path file count
+        int afterSNRFilecount = gcpConnection.bucketSize(Constants.SNR_DONE_PATH);
+        assertEquals(afterSNRFilecount,beforeSNRFilecount+2);
+
 
     }
 
 
 
     @Test (enabled = true , priority = 1)
-    public void validate_uniquekey_constraint() throws IOException, InterruptedException, SQLException, URISyntaxException {
+    public void validate_DuplicateFile() throws IOException, InterruptedException, SQLException, URISyntaxException {
         String dagstatus;
+        int beforeDuplicatefilecount =  gcpConnection.bucketSize(Constants.DUPLICATE_FILE_PATH);
         testdataprep();
         restResponse = triggerDag.triggerDag(TRIGGER_API, CATALOGUE_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(CATALOGUE_DAG_ID, DAG_STATE_API, 5,45000);
 
         assertEquals(dagstatus,"failed");
+        int afterDuplicatefilecount = gcpConnection.bucketSize(Constants.DUPLICATE_FILE_PATH);
+        //check duplicate file
+        assertEquals(afterDuplicatefilecount,beforeDuplicatefilecount+2);
 
     }
 
@@ -146,7 +161,7 @@ public class TestCatalogue implements Constants {
 
         restResponse = triggerDag.triggerDag(TRIGGER_API, DATA_MARKER_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
-        dagstatus = triggerDag.triggerAndWait(DATA_MARKER_DAG_ID, DAG_STATE_API, 3,45000);
+        dagstatus = triggerDag.triggerAndWait(DATA_MARKER_DAG_ID, DAG_STATE_API, 3,55000);
 
         assertEquals(dagstatus,"success");
 
@@ -166,7 +181,7 @@ public class TestCatalogue implements Constants {
         }
         int bucketsize =  gcpConnection.bucketSize(Constants.RAW_LANDING_PATH+audio_id_testamulya2+"/clean/");
         assertEquals(bucketsize,9);
-
+        // data deleted in catalogued
     }
 
 
@@ -178,7 +193,7 @@ public class TestCatalogue implements Constants {
         int before_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_PRE_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
-        dagstatus = triggerDag.triggerAndWait(REPORT_PRE_DAG_ID, DAG_STATE_API, 3,30000);
+        dagstatus = triggerDag.triggerAndWait(REPORT_PRE_DAG_ID, DAG_STATE_API, 3,35000);
         assertEquals(dagstatus,"success");
         int after_reportgeneration_count = gcpConnection.bucketSize(Constants.PRE_REPORT_PATH);
         int after_csvreport_count = gcpConnection.bucketSize(Constants.PRE_REPORT__CSV_PATH);
@@ -211,7 +226,7 @@ public class TestCatalogue implements Constants {
         int before_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
         restResponse = triggerDag.triggerDag(TRIGGER_API, REPORT_POST_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
-        dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,30000);
+        dagstatus = triggerDag.triggerAndWait(REPORT_POST_DAG_ID, DAG_STATE_API, 3,35000);
         assertEquals(dagstatus,"success");
         int after_csvreport_count = gcpConnection.bucketSize(Constants.POST_REPORT__CSV_PATH);
         //assertEquals(after_reportgeneration_count,before_reportgeneration_count+1);

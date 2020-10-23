@@ -33,14 +33,4 @@ public class GCPConnection  implements Constants {
         return list.size();
     }
 
-
-
-   /* public static void main(String aa[])
-    {
-
-        System.out.println(bucketSize(DOWNLOAD_DIRECTORY));
-        System.out.println(bucketSize(CATALOGUE_DIRECTORY));
-
-    }*/
-
 }
