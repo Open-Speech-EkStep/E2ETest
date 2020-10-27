@@ -26,7 +26,7 @@ public class TestCatalogue implements Constants {
     public void testdataprep() throws IOException, URISyntaxException {
         upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.SNR_DONE_PATH+"testamulya2.mp3");
         upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.SNR_DONE_PATH+"testamulya2.csv");
-        upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.DUPLICATE_FILE_PATH+"testamulya2.csv");
+        upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.DUPLICATE_FILE_PATH+"testamulya2.mp3");
         upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.DUPLICATE_FILE_PATH+"testamulya2.csv");
         upload_Delete_Object.uploadObject(PROJECT_ID,BUCKET_NAME,CSVOBJECT_PATH,CSV_PATH);
         upload_Delete_Object.uploadObject(PROJECT_ID,BUCKET_NAME,AUDIOOBJECT_PATH,AUDIOFILE_PATH);
@@ -140,6 +140,7 @@ public class TestCatalogue implements Constants {
     public void validate_DuplicateFile() throws IOException, InterruptedException, SQLException, URISyntaxException {
         String dagstatus;
         int beforeDuplicatefilecount =  gcpConnection.bucketSize(Constants.DUPLICATE_FILE_PATH);
+        System.out.println(beforeDuplicatefilecount);
         testdataprep();
         restResponse = triggerDag.triggerDag(TRIGGER_API, CATALOGUE_DAG_ID,triggerDag.setformatteddate());
         assertEquals(restResponse.getStatus(),"SUCCESS");
