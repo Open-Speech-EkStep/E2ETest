@@ -146,7 +146,7 @@ public class TestCatalogue implements Constants {
         assertEquals(restResponse.getStatus(),"SUCCESS");
         dagstatus = triggerDag.triggerAndWait(CATALOGUE_DAG_ID, DAG_STATE_API, 5,45000);
 
-        assertEquals(dagstatus,"failed");
+        assertEquals(dagstatus,"success");
         int afterDuplicatefilecount = gcpConnection.bucketSize(Constants.DUPLICATE_FILE_PATH);
         //check duplicate file
         assertEquals(afterDuplicatefilecount,beforeDuplicatefilecount+2);
