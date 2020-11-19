@@ -1,10 +1,8 @@
 
 import java.io.IOException;
-
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
-
 import Constants.Constants;
 import restCommunication.RestClient;
 import restCommunication.RestResponse;
@@ -23,10 +21,6 @@ public class TriggerDag implements Constants {
             Map<String, String> headerMap = getHeaders();
 
             RestResponse restResponse = restClient.post(COMPOSER_ENDPOINT, paramMap, headerMap,null);
-//            String execution_date=restClient.getJSONvaluesfromResponse(restResponse,"response_time");
-//            execution_date = execution_date.substring(1, execution_date.length()-1);
-//            setformatteddate(execution_date);
-
             return restResponse;
 
         } catch (Exception e) {
@@ -41,20 +35,10 @@ public class TriggerDag implements Constants {
         Map<String, String> paramMap = setAirflowparams(api,command, key, value);
         Map<String, String> headerMap = getHeaders();
         RestResponse restResponse = restClient.post(COMPOSER_ENDPOINT, paramMap, headerMap,null);
-
         return restResponse;
 
     }
 
-//    public RestResponse getAirflowVariable(String api,String value) throws IOException, URISyntaxException {
-//        RestClient restClient = new RestClient();
-//        Map<String, String> paramMap = getAirflowparams(api,value);
-//        Map<String, String> headerMap = getHeaders();
-//        RestResponse restResponse = restClient.post(COMPOSER_ENDPOINT, paramMap, headerMap,null);
-//
-//        return restResponse;
-//
-//    }
 
     public String setformatteddate()
     {
@@ -78,8 +62,6 @@ public class TriggerDag implements Constants {
             String dagstatusarray[] = dagstatus.split("@");
 
             String newdagstatus=dagstatusarray[dagstatusarray.length-1];
-
-           //dagstatus = dagstatus.substring(1, dagstatus.length()-3);
             System.out.println(newdagstatus);
             return newdagstatus;
 
@@ -142,11 +124,5 @@ public class TriggerDag implements Constants {
         return paramMap;
     }
 
-//    private static Map<String, String> getAirflowparams(String api,String value) {
-//        Map<String, String> paramMap = new HashMap<>();
-//        paramMap.put("api", api);
-//        paramMap.put("get", command);
-//        return paramMap;
-//    }
 
 }

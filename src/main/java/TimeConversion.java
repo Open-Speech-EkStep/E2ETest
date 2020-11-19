@@ -7,20 +7,6 @@ import java.util.TimeZone;
 
 public class TimeConversion {
 
-
-  /*  public static String parseDate(String triggertime) {
-
-        System.out.println(triggertime);
-        Date date = new Date(triggertime);
-
-        SimpleDateFormat sdf;
-        sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-        String formatteddate = sdf.format(date);
-        System.out.println(formatteddate);
-        return formatteddate;
-    }*/
-
     public static String scheduletime()
     {
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());

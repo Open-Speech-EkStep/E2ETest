@@ -4,6 +4,7 @@ import java.sql.*;
 
 public class Postgresclient {
 
+    static Postgresclient postgresclient;
     static Connection connection = null;
     static Statement statement = null;
     static ResultSet resultSet = null;
@@ -63,5 +64,13 @@ public class Postgresclient {
         }
     }
 
+
+    public static Postgresclient getPostgresClient()
+    {
+        if (postgresclient==null) {
+            postgresclient = new Postgresclient();
+        }
+        return postgresclient;
+    }
 
 }
