@@ -18,7 +18,7 @@ public class DataMarkerStepdefs implements Constants {
     GCPConnection gcpConnection = new GCPConnection();
     Postgresclient postgresclient = Postgresclient.getPostgresClient();
     RestResponse restResponse = new RestResponse();
-    String audio_id_testamulya2 = "";
+    String audio_id_test_source = "";
 
 
 
@@ -42,24 +42,24 @@ public class DataMarkerStepdefs implements Constants {
     @And("^media meta data staging table should be updated with staged_for_transcription = TRUE$")
     public void mediaMetaDataStagingTableShouldBeUpdatedWithStaged_for_transcriptionTRUE() throws SQLException {
 
-        ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'testamulya2') AND staged_for_transcription ='TRUE'");
+        ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'test_source') AND staged_for_transcription ='TRUE'");
         while (media_speaker_mapping_count.next())
         {
             int numberofrows = media_speaker_mapping_count.getInt(1);
             assertEquals(numberofrows,9);
         }
 
-        ResultSet mediametadata = postgresclient.select_query("select * FROM media_metadata_staging where source = 'testamulya2' ");
+        ResultSet mediametadata = postgresclient.select_query("select * FROM media_metadata_staging where source = 'test_source' ");
         while (mediametadata.next())
         {
             BigDecimal audio_id = mediametadata.getBigDecimal ("audio_id");
-            audio_id_testamulya2 = audio_id.toString();
+            audio_id_test_source = audio_id.toString();
         }
     }
 
     @And("^Files should be moved to Landing Folder in Google Bucket$")
     public void filesShouldBeMovedToLandingFolderInGoogleBucket() {
-        int bucketsize =  gcpConnection.bucketSize(Constants.RAW_LANDING_PATH+audio_id_testamulya2+"/clean/");
+        int bucketsize =  gcpConnection.bucketSize(Constants.RAW_LANDING_PATH+audio_id_test_source+"/clean/");
         assertEquals(bucketsize,9);
     }
 }

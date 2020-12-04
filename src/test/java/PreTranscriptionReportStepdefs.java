@@ -62,6 +62,7 @@ public class PreTranscriptionReportStepdefs implements Constants {
     public void theDagShouldFail(String dagid) throws InterruptedException {
         String dagstatus = triggerDag.triggerAndWait(dagid, DAG_STATE_API, 2,25000);
         assertEquals(dagstatus,"failed");
+
     }
 }
 

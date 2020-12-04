@@ -1,8 +1,10 @@
 
 import java.io.IOException;
+
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
+
 import Constants.Constants;
 import restCommunication.RestClient;
 import restCommunication.RestResponse;
@@ -21,6 +23,7 @@ public class TriggerDag implements Constants {
             Map<String, String> headerMap = getHeaders();
 
             RestResponse restResponse = restClient.post(COMPOSER_ENDPOINT, paramMap, headerMap,null);
+
             return restResponse;
 
         } catch (Exception e) {

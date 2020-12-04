@@ -17,7 +17,7 @@ public class STTStepdefs implements Constants {
     GCPConnection gcpConnection = new GCPConnection();
     Postgresclient postgresclient = Postgresclient.getPostgresClient();
     RestResponse restResponse = new RestResponse();
-    String audio_id_testamulya2 = "";
+    String audio_id_test = "";
 
 
     @When("^I trigger the STT Dag$")
@@ -29,24 +29,24 @@ public class STTStepdefs implements Constants {
 
     @And("^Database tables should be updated with correct data$")
     public void databaseTablesShouldBeUpdatedWithCorrectData() throws SQLException {
-        ResultSet mediametadata = postgresclient.select_query("select * FROM media_metadata_staging where source = 'testamulya2' ");
+        ResultSet mediametadata = postgresclient.select_query("select * FROM media_metadata_staging where source = 'test_source' ");
         while (mediametadata.next())
         {
             boolean isnormalised = mediametadata.getBoolean("is_normalized");
             BigDecimal audio_id = mediametadata.getBigDecimal ("audio_id");
-            audio_id_testamulya2 = audio_id.toString();
-            System.out.println(audio_id_testamulya2);
+            audio_id_test = audio_id.toString();
+            System.out.println(audio_id_test);
             assertTrue(isnormalised);
         }
 
-        ResultSet media = postgresclient.select_query("select count(*) FROM media where source= 'testamulya2' ");
+        ResultSet media = postgresclient.select_query("select count(*) FROM media where source= 'test_source' ");
         while (media.next())
         {
             int numberofrows = media.getInt(1);
             assertEquals(numberofrows,1);
         }
 
-        ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'testamulya2') AND status= 'Rejected' ");
+        ResultSet media_speaker_mapping_count = postgresclient.select_query("select count(*) FROM media_speaker_mapping where audio_id in (select audio_id FROM media_metadata_staging where source = 'test_source') AND status= 'Rejected' ");
         while (media_speaker_mapping_count.next())
         {
             int numberofrows = media_speaker_mapping_count.getInt(1);
@@ -57,12 +57,12 @@ public class STTStepdefs implements Constants {
     @And("^File should be uploaded to clean and rejected folder in STT path$")
     public void fileShouldBeUploadedToCleanAndRejectedFolderInSTTPath() {
 
-        System.out.println(Constants.RAW_CATALOGUED_PATH+audio_id_testamulya2+"/clean/");
+        System.out.println(Constants.RAW_CATALOGUED_PATH+audio_id_test+"/clean/");
 
-        int rejectedfilecount =  gcpConnection.bucketSize(Constants.STT_PATH+audio_id_testamulya2+"/rejected/");
+        int rejectedfilecount =  gcpConnection.bucketSize(Constants.STT_PATH+audio_id_test+"/rejected/");
         assertEquals(rejectedfilecount,3);
 
-        int cleanfilecount =  gcpConnection.bucketSize(Constants.STT_PATH+audio_id_testamulya2+"/clean/");
+        int cleanfilecount =  gcpConnection.bucketSize(Constants.STT_PATH+audio_id_test+"/clean/");
         assertEquals(cleanfilecount,13);
 
     }

@@ -15,7 +15,6 @@ public class Postgresclient {
             return;
         }
         try {
-            System.out.println("envvar ="+ System.getenv());
             Class.forName("org.postgresql.Driver");
             connection = DriverManager
                     .getConnection("jdbc:postgresql://localhost:5432"+ "/speech_recognition_data_catalog_test",

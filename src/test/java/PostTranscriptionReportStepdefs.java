@@ -51,7 +51,7 @@ public class PostTranscriptionReportStepdefs implements Constants {
 
     @And("^Correct value of Airflow variable is uploaded$")
     public void correctValueOfAirflowVariableIsUploaded() throws IOException, URISyntaxException {
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"testamulya2\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"test_source\"]");
 
     }
 }
