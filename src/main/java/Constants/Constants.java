@@ -2,7 +2,7 @@ package Constants;
 
 public interface Constants{
 
-    String  COMPOSER_ENDPOINT= "https://jf48cb859cc84047dp-tp.appspot.com/admin/rest_api/api";
+    String  COMPOSER_ENDPOINT= "https://jcb87ab9c69cf3b4dp-tp.appspot.com/admin/rest_api/api";
     String CLIENT_ID = "304385116606-cpqn3bf1ihte6ccaoqdhros84ogpmv65.apps.googleusercontent.com";
     String IAM_SCOPE = "https://www.googleapis.com/auth/iam";
     String PROJECT_ID="ekstepspeechrecognition";
