@@ -2,8 +2,8 @@ package Constants;
 
 public interface Constants{
 
-    String  COMPOSER_ENDPOINT= "https://jcb87ab9c69cf3b4dp-tp.appspot.com/admin/rest_api/api";
-    String CLIENT_ID = "498707616447-2lc3ehrpui3spn0shu6q66svqvapvrbq.apps.googleusercontent.com";
+    String  COMPOSER_ENDPOINT= "https://pc694b0200cbb6134p-tp.appspot.com/admin/rest_api/api";
+    String CLIENT_ID = "648297608998-g4bsf338ahh8nrluc18srlffdhg03foj.apps.googleusercontent.com";
     String IAM_SCOPE = "https://www.googleapis.com/auth/iam";
     String PROJECT_ID="ekstepspeechrecognition";
     String  BUCKET_NAME="ekstepspeechrecognition-test";
