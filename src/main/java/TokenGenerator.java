@@ -62,7 +62,7 @@ public class TokenGenerator implements Constants {
         HttpRequestFactory requestFactory  = new NetHttpTransport().createRequestFactory();
         HttpRequest request = requestFactory.buildGetRequest(new GenericUrl(COMPOSER_ENDPOINT));
         request = buildIapRequest(request,CLIENT_ID);
-        System.out.println(request.getHeaders().getAuthorization());
+        // System.out.println(request.getHeaders().getAuthorization());
         return request.getHeaders().getAuthorization();
 
     }

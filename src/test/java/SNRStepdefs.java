@@ -122,7 +122,7 @@ public class SNRStepdefs implements Constants {
     @Then("^The \"([^\"]*)\" Dag should run successfully$")
     public void theDagShouldRunSuccessfully(String dagid) throws InterruptedException {
       System.out.println("--------------------------------------------------------"+dagid);
-       String dagstatus = triggerDag.triggerAndWait(dagid, DAG_STATE_API, 5, 45000);
+       String dagstatus = triggerDag.triggerAndWait(dagid, DAG_STATE_API, 7, 55000);
         assertEquals(dagstatus, "success");
     }
 
