@@ -1,8 +1,6 @@
 import Constants.Constants;
 import cloudCommunication.GCPConnection;
-import cucumber.api.java.en.And;
-import cucumber.api.java.en.Then;
-import cucumber.api.java.en.When;
+import io.cucumber.java.en.*;
 import restCommunication.RestResponse;
 import java.io.IOException;
 import java.net.URISyntaxException;
