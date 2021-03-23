@@ -58,7 +58,7 @@ public class PreTranscriptionReportStepdefs implements Constants {
 
     @Then("^The \"([^\"]*)\" Dag should fail$")
     public void theDagShouldFail(String dagid) throws InterruptedException {
-        String dagstatus = triggerDag.triggerAndWait(dagid, DAG_STATE_API, 2,25000);
+        String dagstatus = triggerDag.triggerAndWait(dagid, DAG_STATE_API, 3,35000);
         assertEquals(dagstatus,"failed");
 
     }
