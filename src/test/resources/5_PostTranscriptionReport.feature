@@ -1,5 +1,5 @@
-Feature: Pre Transcription Report Generation
-  Scenario: Test positive scenario and validate CSV Report is getting generated for Pre Transcription Report
+Feature: Post Transcription Report Generation
+  Scenario: Test positive scenario and validate CSV Report is getting generated for Post Transcription Report
     When i Trigger the Report Generation Dag
     Then The "report_generation_pipeline_post-transcription" Dag should run successfully
     And Report should be generated in Reports folder in Google Bucket

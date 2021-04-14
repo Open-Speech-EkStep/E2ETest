@@ -4,6 +4,8 @@ import io.cucumber.java.en.*;
 import databaseConnection.Postgresclient;
 import restCommunication.RestResponse;
 import static org.testng.Assert.assertTrue;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +19,7 @@ public class STTStepdefs implements Constants {
     Postgresclient postgresclient = Postgresclient.getPostgresClient();
     RestResponse restResponse = new RestResponse();
     String audio_id_test = "";
+    Commons commonmethods = new Commons();
 
 
     @When("^I trigger the STT Dag$")
@@ -64,6 +67,11 @@ public class STTStepdefs implements Constants {
         int cleanfilecount =  gcpConnection.bucketSize(Constants.STT_PATH+audio_id_test+"/clean/");
         assertEquals(cleanfilecount,13);
 
+    }
+
+    @Given("Files are removed from Landing Folder")
+    public void filesAreRemovedFromLandingFolder() throws IOException {
+       commonmethods.removeFilesfromLanding();
     }
 }
 

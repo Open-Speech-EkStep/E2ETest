@@ -64,6 +64,11 @@ public class Commons implements Constants {
         upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.DUPLICATE_FILE_PATH+"testfile.csv");
     }
 
+    public void removeFilesfromLanding() throws IOException
+    {
+        upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.LANDING_PATH);
+    }
+
 }
 
 

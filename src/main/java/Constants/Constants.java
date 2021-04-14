@@ -23,6 +23,7 @@ public interface Constants{
     String JOB_SUCCESS_STATUS="success";
     String RAW_CATALOGUED_PATH ="data/audiotospeech/raw/download/catalogued/hindi/audio/test_source/";
     String SNR_DONE_PATH ="data/audiotospeech/raw/download/snrdonepath/hindi/audio/test_source/";
+    String LANDING_PATH = "data/audiotospeech/raw/landing/hindi/audio/test_source/";
     String DUPLICATE_FILE_PATH ="data/audiotospeech/raw/download/duplicate/test_source/";
     String RAW_LANDING_PATH ="data/audiotospeech/raw/landing/hindi/audio/test_source/";
     String PRE_REPORT_PATH="data/audiotospeech/raw/download/catalogued/hindi/reports/";
