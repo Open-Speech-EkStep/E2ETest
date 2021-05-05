@@ -29,8 +29,8 @@ public class Commons implements Constants {
 
         triggerDag.setAirflowVariable(VARIABLE_API,"set","language","hindi");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","bucket","ekstepspeechrecognition-test");
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription","[\"test_source\"]");
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription","[\"test_source\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription","{\"test_source\": { \"language\":\"hindi\"} } ");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription","{\"test_source\": { \"language\":\"hindi\"} } ");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofields","{\"test_source\": []}");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","audiofilelist","{\"test_source\": []}");
         triggerDag.setAirflowVariable(VARIABLE_API,"set","audioidsforstt","{\"test_source\": []}");
@@ -64,11 +64,9 @@ public class Commons implements Constants {
         upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.DUPLICATE_FILE_PATH+"testfile.csv");
     }
 
-    public void removeFilesfromLanding() throws IOException
+        public void removeFilesfromLanding() throws IOException
     {
         upload_Delete_Object.deleteObject(Constants.PROJECT_ID,Constants.BUCKET_NAME,Constants.LANDING_PATH);
     }
 
 }
-
-

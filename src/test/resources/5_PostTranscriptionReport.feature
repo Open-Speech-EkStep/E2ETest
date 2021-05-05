@@ -10,6 +10,11 @@ Feature: Post Transcription Report Generation
     When I trigger the Post Transcription Report dag
     Then The "report_generation_pipeline_post-transcription" Dag should fail
 
+  Scenario: Test Invalid Scenario and validate that dag fails when the language uploaded in variable does not exist
+    Given Airflow variable is uploaded with wrong language for Post Transcription Report
+    When I trigger the Post Transcription Report dag
+    Then The "report_generation_pipeline_post-transcription" Dag should fail
+
 
   Scenario: Test Invalid Scenario and validate that dag fails when there is no data in the DB
     Given Data is deleted from the DB

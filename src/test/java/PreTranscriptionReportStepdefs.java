@@ -44,7 +44,7 @@ public class PreTranscriptionReportStepdefs implements Constants {
 
     @When("^Airflow variable is uploaded with wrong source name$")
     public void airflowVariableIsUploadedWithWrongSourceName() throws IOException, URISyntaxException {
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription ","[\"test\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_pre-transcription ","{\"test\": { \"language\":\"hindi\"} } ");
         
     }
 

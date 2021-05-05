@@ -33,7 +33,7 @@ public class PostTranscriptionReportStepdefs implements Constants {
 
     @When("^Airflow variable is uploaded with wrong source name for Post Transcription Report$")
     public void airflowVariableIsUploadedWithWrongSourceNameForPostTranscriptionReport() throws IOException, URISyntaxException {
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"test\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","{\"test\": { \"language\":\"hindi\"} }");
     }
 
     @And("^I trigger the Post Transcription Report dag$")
@@ -50,7 +50,12 @@ public class PostTranscriptionReportStepdefs implements Constants {
 
     @And("^Correct value of Airflow variable is uploaded$")
     public void correctValueOfAirflowVariableIsUploaded() throws IOException, URISyntaxException {
-        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","[\"test_source\"]");
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","{\"test_source\": { \"language\":\"hindi\"} }");
 
+    }
+
+    @Given("Airflow variable is uploaded with wrong language for Post Transcription Report")
+    public void airflowVariableIsUploadedWithWrongLanguageForPostTranscriptionReport() throws IOException, URISyntaxException {
+        triggerDag.setAirflowVariable(VARIABLE_API,"set","validation_report_source_post-transcription ","{\"test_source\": { \"language\":\"spanish\"} }");
     }
 }
